@@ -1,10 +1,12 @@
 '''Pinot's Clip Script'''
+from typing import Dict
 from twitch_chat import TwitchChat
 from pynput.keyboard import Key, Controller
 import tkinter as tk
 import sys 
 import threading
 import webbrowser
+from configparser import ConfigParser
 
 # To print logs in window
 class PrintLogger(): # create file like object
@@ -20,7 +22,8 @@ class PrintLogger(): # create file like object
         pass
 
 # Start values
-keyboard = Controller();
+config = ConfigParser()
+keyboard = Controller()
 mybot = None
 
 # Window definitions
@@ -29,6 +32,7 @@ WINDOW_HEIGHT = 300
 CENTER = WINDOW_WIDTH / 2
 STARTING_POINT = 50
 
+# tkinter stuff
 root= tk.Tk()
 root.title('Pinot\'s Clip Bot')
 
@@ -65,11 +69,20 @@ canvas1.create_window(CENTER, STARTING_POINT * 4 + 20, window=keypress)
 
 # Button functions
 def connect():
+
+    # Grab values
     TOKEN = token.get()
     BOT_NICKNAME = bot_name.get()
-    CHANNEL = f'#{channel_name.get()}'
-    KEYPRESS = Key[keypress.get().lower()]
+    CHANNEL_STRING = channel_name.get()
+    CHANNEL = f'#{CHANNEL_STRING}'
+    KEYPRESS_STRING = keypress.get().lower()
+    KEYPRESS = Key[KEYPRESS_STRING]
+
+    # Create a config or overwrite settings with new data
+    create_config(CHANNEL_STRING, BOT_NICKNAME, TOKEN, KEYPRESS_STRING)
     print(f'Connecting to {CHANNEL}\'s chat as {BOT_NICKNAME}')
+
+    # connect
     global mybot
     mybot = TwitchChat(oauth=TOKEN, bot_name=BOT_NICKNAME, channel_name=CHANNEL)
     while True:
@@ -81,10 +94,12 @@ def connect():
                 mybot.send_to_chat(f'{BOT_NICKNAME} here! Clip command recieved! Making clip...')
                 keyboard.press(KEYPRESS)
                 keyboard.release(KEYPRESS)
+
 def close():
     global mybot
     print('Closing connection. Goodbye!')
     mybot.close_socket()
+    mybot = None
 
 def start_connection():
     thread = threading.Thread(target=connect)
@@ -92,6 +107,28 @@ def start_connection():
 
 def callback(url):
     webbrowser.open_new(url)
+
+def create_config(channel_name, bot_name, auth_token, key_to_press):
+    config = ConfigParser()
+    config.add_section('main')
+    config.set('main', 'channel_name', channel_name)
+    config.set('main', 'bot_name', bot_name)
+    config.set('main', 'auth_token', auth_token)
+    config.set('main', 'key_to_press', key_to_press)
+
+    with open('config.ini', 'w') as f:
+        config.write(f)
+
+def read_config():
+    try: 
+        config = ConfigParser()
+        config.read('config.ini')
+        channel_name.insert(0, config.get('main', 'channel_name'))
+        bot_name.insert(0, config.get('main', 'bot_name'))
+        token.insert(0, config.get('main', 'auth_token'))
+        keypress.insert(0, config.get('main', 'key_to_press'))
+    except Exception:
+        print(f'{Exception}: could not read config file. Starting fresh')
 
 # Start and Stop buttons
 button1 = tk.Button(text='Start',command=start_connection, bg='green',fg='white')
@@ -131,4 +168,7 @@ pl = PrintLogger(t)
 # replace sys.stdout with our object
 sys.stdout = pl
 
-root.mainloop() 
+# try to read config and insert values
+read_config()
+
+root.mainloop()
