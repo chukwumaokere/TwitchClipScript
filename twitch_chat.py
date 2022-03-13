@@ -54,9 +54,12 @@ class TwitchChat:
         for line in read_buffer.split('\r\n'):
             # ping pong to stay alive
             if 'PING' in line and 'PRIVMSG' not in line:
-                self.sock.send("PONG tmi.twitch.tv\r\n".encode('utf-8'))
+                self.sock.send("PONG\n".encode('utf-8'))
 
             # reacts at user message
             elif line != '':
                 parts = line.split(':', 2)
                 return parts[1].split('!', 1)[0], parts[2]
+    
+    def close_socket(self) -> bool:
+        return self.sock.close()
