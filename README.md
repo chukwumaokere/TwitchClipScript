@@ -14,3 +14,4 @@ This program will help you create a bot that will listen for a !clip command and
 - Ignore most chat logs so the log doesnt get filled
 - Add input box for command to track so users arent stuck with !clip
 - Add timestamp to logging.
+- Package as an .exe
