@@ -109,6 +109,7 @@ def callback(url):
     webbrowser.open_new(url)
 
 def create_config(channel_name, bot_name, auth_token, key_to_press):
+    print('Saving config info to config.ini...')
     config = ConfigParser()
     config.add_section('main')
     config.set('main', 'channel_name', channel_name)
@@ -120,6 +121,7 @@ def create_config(channel_name, bot_name, auth_token, key_to_press):
         config.write(f)
 
 def read_config():
+    print('Loading config file config.ini...')
     try: 
         config = ConfigParser()
         config.read('config.ini')
