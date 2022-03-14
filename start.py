@@ -69,7 +69,7 @@ canvas1.create_window(CENTER, STARTING_POINT * 4 + 20, window=keypress)
 
 # Button functions
 def connect():
-
+    close()
     # Grab values
     TOKEN = token.get()
     BOT_NICKNAME = bot_name.get()
@@ -97,9 +97,14 @@ def connect():
 
 def close():
     global mybot
-    print('Closing connection. Goodbye!')
-    mybot.close_socket()
-    mybot = None
+    print('Closing any previously open connections...')
+    try:
+        mybot.close_socket()
+        print('Closing connection. Goodbye!')
+        mybot = None
+    except Exception:
+        print(f'{Exception} No previous connections. Continuing...')
+        mybot = None
 
 def start_connection():
     thread = threading.Thread(target=connect)
@@ -135,7 +140,7 @@ def read_config():
         print(f'{Exception}: could not read config file. Starting fresh')
 
 # Start and Stop buttons
-button1 = tk.Button(text='Start',command=start_connection, bg='green',fg='white')
+button1 = tk.Button(text='Start/Restart',command=start_connection, bg='green',fg='white')
 button2 = tk.Button(text='Stop',command=close, bg='brown',fg='white')
 canvas1.create_window(CENTER, STARTING_POINT * 5 + 10, window=button1)
 canvas1.create_window(CENTER, STARTING_POINT * 5 + 40, window=button2)
