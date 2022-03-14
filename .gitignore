@@ -1,2 +1,5 @@
 __pycache__
 config.ini
+output
+output2
+pyinstaller.json
