@@ -3,10 +3,14 @@
 This program will help you create a bot that will listen for a !clip command and will run a native clip button on your stream PC
 
 ### Instructions 
-1) Download `clipscript.exe`
-2) Get twitch tmi auth code 
-3) Fill out info
-4) Press start :)
+1) Download latest [`PinotsClipScript.zip`](https://github.com/chukwumaokere/TwitchClipScript/releases/latest)
+2) Unzip it to its own folder i.e., `PinotsClipScript/`
+3) Run `PinotsClipScript.exe`
+4) Get twitch tmi auth code 
+5) Fill out info
+6) Press Start/Restart :)
+
+If it stops working or something crashes, press Start/Restart or re-run the program
 
 ### Dev Requirements
 1) Python 3.6+
