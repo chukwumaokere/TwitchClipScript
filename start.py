@@ -119,6 +119,7 @@ def create_config(channel_name, bot_name, auth_token, key_to_press):
 
     with open('config.ini', 'w') as f:
         config.write(f)
+    print('Saved config file config.ini successfully!')
 
 def read_config():
     print('Loading config file config.ini...')
@@ -129,6 +130,7 @@ def read_config():
         bot_name.insert(0, config.get('main', 'bot_name'))
         token.insert(0, config.get('main', 'auth_token'))
         keypress.insert(0, config.get('main', 'key_to_press'))
+        print('Loaded config file config.ini successfully!')
     except Exception:
         print(f'{Exception}: could not read config file. Starting fresh')
 
