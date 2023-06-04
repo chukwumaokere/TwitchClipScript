@@ -1,11 +1,12 @@
 '''Pinot's Clip Script'''
 from typing import Dict
 from twitch_chat import TwitchChat
-from pynput.keyboard import Key, Controller
+from ahk import AHK
 import tkinter as tk
 import sys 
 import threading
 import webbrowser
+import time
 from configparser import ConfigParser
 
 # To print logs in window
@@ -23,7 +24,7 @@ class PrintLogger(): # create file like object
 
 # Start values
 config = ConfigParser()
-keyboard = Controller()
+ahk = AHK()
 mybot = None
 
 # Window definitions
@@ -73,10 +74,10 @@ def connect():
     # Grab values
     TOKEN = token.get()
     BOT_NICKNAME = bot_name.get()
-    CHANNEL_STRING = channel_name.get()
+    CHANNEL_STRING = channel_name.get().lower()
     CHANNEL = f'#{CHANNEL_STRING}'
     KEYPRESS_STRING = keypress.get().lower()
-    KEYPRESS = Key[KEYPRESS_STRING]
+    KEYPRESS = KEYPRESS_STRING
 
     # Create a config or overwrite settings with new data
     create_config(CHANNEL_STRING, BOT_NICKNAME, TOKEN, KEYPRESS_STRING)
@@ -92,8 +93,9 @@ def connect():
             if message == '!clip':
                 print('Clip command received making clip')
                 mybot.send_to_chat(f'{BOT_NICKNAME} here! Clip command recieved! Making clip...')
-                keyboard.press(KEYPRESS)
-                keyboard.release(KEYPRESS)
+                ahk.send_input('{F10 down');
+                time.sleep(0.1)
+                ahk.send_input('{F10 up');
 
 def close():
     global mybot
